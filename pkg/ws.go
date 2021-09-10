@@ -17,8 +17,9 @@ func HandleWS(rw http.ResponseWriter, r *http.Request) {
 	ws, err := upgrader.Upgrade(rw, r, nil)
 	if err != nil {
 		log.Println("Cannot switch protocals!")
+		rw.WriteHeader(http.StatusMethodNotAllowed)
+		return
 	}
-	defer ws.Close()
 	clientInstance := &internal.Client{
 		Conn: ws,
 		// brodcastedMessages: make(chan Message, 100),

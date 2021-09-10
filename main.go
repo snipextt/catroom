@@ -8,7 +8,7 @@ import (
 )
 
 func main() {
-	// abc := time.Now()
 	http.HandleFunc("/ws", pkg.HandleWS)
+	log.Println("Listining on *:8080")
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }
