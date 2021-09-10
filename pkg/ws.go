@@ -20,6 +20,7 @@ func HandleWS(rw http.ResponseWriter, r *http.Request) {
 		rw.WriteHeader(http.StatusMethodNotAllowed)
 		return
 	}
+	ws.WriteMessage(websocket.TextMessage, []byte("Connected!"))
 	clientInstance := &internal.Client{
 		Conn: ws,
 		// brodcastedMessages: make(chan Message, 100),

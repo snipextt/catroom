@@ -1,16 +1,18 @@
 package internal
 
 import (
+	"fmt"
 	"log"
 	"time"
 
 	"github.com/gorilla/websocket"
 )
 
-var Rooms = make(map[string]Room)
+var Rooms = make(map[string]*Room)
 
 type Client struct {
-	Conn *websocket.Conn
+	Conn        *websocket.Conn
+	JoinedRooms []string
 }
 
 func (c *Client) WatchMessages() {
@@ -22,19 +24,28 @@ func (c *Client) WatchMessages() {
 			c.Conn.Close()
 			return
 		}
+		if !message.Valid() {
+			c.Conn.WriteJSON(&Message{
+				Timestamp: time.Now(),
+				Message:   "Invalid message syntax!",
+				Type:      "error",
+			})
+			continue
+		}
 		switch message.Type {
 		case "JOIN":
-			c.JoinRoom(message.Room, message.DisplayName)
+			c.JoinRoom(message)
 		case "MESSAGE":
 			c.SendMessage(message)
 		case "CREATE":
 			c.CreateRoom(message)
 		}
-
+		fmt.Println(Rooms)
 	}
 }
 
-func (c *Client) JoinRoom(id string, displayName string) {
+func (c *Client) JoinRoom(message Message) {
+	id := message.Room
 	if id == "" {
 		c.Conn.WriteJSON(&Message{
 			Timestamp: time.Now(),
@@ -51,17 +62,7 @@ func (c *Client) JoinRoom(id string, displayName string) {
 		})
 		return
 	} else {
-		for _, conn := range room.Connections {
-			room.SendUserInRoomInfo(conn, displayName)
-		}
-		room.Connections = append(room.Connections, c.Conn)
-		room.Users = append(room.Users, displayName)
-		c.Conn.WriteJSON(&Message{
-			Timestamp: time.Now(),
-			Message:   "Joined room",
-			Type:      "info",
-		})
-		room.SendUserInRoomInfo(c.Conn, nil)
+		room.Join(c, message)
 	}
 }
 
@@ -105,10 +106,16 @@ func (c *Client) CreateRoom(message Message) {
 		})
 		return
 	}
-	room := Room{
-		Connections: []*websocket.Conn{c.Conn},
-		Users:       []string{message.DisplayName},
-	}
+	room := &Room{}
 	Rooms[message.Room] = room
-	c.JoinRoom(message.Room, message.DisplayName)
+	c.JoinRoom(message)
+}
+
+func (c *Client) isPartOfRoom(roomToJoin string) bool {
+	for _, room := range c.JoinedRooms {
+		if room == roomToJoin {
+			return true
+		}
+	}
+	return false
 }
