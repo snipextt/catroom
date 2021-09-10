@@ -1,7 +1,6 @@
 package internal
 
 import (
-	"fmt"
 	"log"
 	"time"
 
@@ -34,13 +33,12 @@ func (c *Client) WatchMessages() {
 		}
 		switch message.Type {
 		case "JOIN":
-			c.JoinRoom(message)
+			go c.JoinRoom(message)
 		case "MESSAGE":
-			c.SendMessage(message)
+			go c.SendMessage(message)
 		case "CREATE":
-			c.CreateRoom(message)
+			go c.CreateRoom(message)
 		}
-		fmt.Println(Rooms)
 	}
 }
 
@@ -86,6 +84,7 @@ func (c *Client) SendMessage(message Message) {
 		for _, conn := range room.Connections {
 			conn.WriteJSON(&message)
 		}
+		room.Messages <- message
 	}
 }
 
@@ -108,6 +107,9 @@ func (c *Client) CreateRoom(message Message) {
 	}
 	room := &Room{}
 	Rooms[message.Room] = room
+	room.Messages = make(chan Message, 50)
+	room.ID = message.Room
+	go room.WatchMessages()
 	c.JoinRoom(message)
 }
 

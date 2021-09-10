@@ -10,6 +10,13 @@ type Message struct {
 	Type        string    `json:"type,omitempty"`
 }
 
+type MessageHistory struct {
+	Timestamp time.Time `json:"timestamp,omitempty"`
+	History   []string  `json:"history,omitempty"`
+	Room      string    `json:"room,omitempty"`
+	Type      string    `json:"type,omitempty"`
+}
+
 func (m *Message) Valid() bool {
 	if m.Message == "" {
 		return false
