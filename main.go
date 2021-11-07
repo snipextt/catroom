@@ -27,6 +27,6 @@ func main() {
 	}()
 	db.ConnectClient()
 	http.HandleFunc("/ws", pkg.HandleWS)
-	log.Println("Listining on *:8080")
+	http.HandleFunc("/", http.FileServer(http.Dir("./static")).ServeHTTP)
 	log.Fatal(http.ListenAndServe(":8080", nil))
 }

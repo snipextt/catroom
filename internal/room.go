@@ -34,6 +34,7 @@ func (r *Room) Join(c *Client, message Message) {
 			Timestamp: time.Now(),
 			Type:      "UserAdd",
 			Message:   user,
+			Room:      message.Room,
 		})
 	}
 	val, err := db.Client.LRange(context.Background(), r.ID, 0, -1).Result()
