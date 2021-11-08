@@ -1,0 +1,37 @@
+/* presets */
+
+html,
+body {
+  height: 100vh;
+  width: 100vw;
+}
+
+.pointer {
+  cursor: pointer !important;
+}
+
+.pfp {
+  max-height: 22px;
+  margin-right: 8px;
+}
+
+.message-pfp {
+  max-height: 32px;
+  margin-right: 12px;
+}
+
+.name {
+  font-weight: bold;
+  font-size: 14px;
+}
+
+p {
+  font-size: 13px;
+  margin: 0;
+}
+
+.time {
+  font-size: 10px;
+  margin-left: 8px;
+  color: #999;
+}

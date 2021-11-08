@@ -10,8 +10,9 @@ import (
 var Rooms = make(map[string]*Room)
 
 type Client struct {
-	Conn        *websocket.Conn
-	JoinedRooms []string
+	Conn         *websocket.Conn
+	JoinedRooms  []string
+	DisplayNames []string
 }
 
 func (c *Client) WatchMessages() {
@@ -19,6 +20,11 @@ func (c *Client) WatchMessages() {
 		var message Message
 		err := c.Conn.ReadJSON(&message)
 		if err != nil {
+			for i, room := range c.JoinedRooms {
+				if room != "" {
+					Rooms[room].Leave(c, c.DisplayNames[i])
+				}
+			}
 			log.Println(err.Error())
 			c.Conn.Close()
 			return
@@ -55,7 +61,7 @@ func (c *Client) JoinRoom(message Message) {
 	if room, ok := Rooms[id]; !ok {
 		c.Conn.WriteJSON(&Message{
 			Timestamp: time.Now(),
-			Message:   "Room id invalid",
+			Message:   "Room does not exist",
 			Type:      "error",
 		})
 		return
@@ -76,7 +82,7 @@ func (c *Client) SendMessage(message Message) {
 	if room, ok := Rooms[message.Room]; !ok {
 		c.Conn.WriteJSON(&Message{
 			Timestamp: time.Now(),
-			Message:   "Room id invalid",
+			Message:   "Room does not exists",
 			Type:      "error",
 		})
 		return
