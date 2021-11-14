@@ -8,8 +8,8 @@ import (
 	"os/signal"
 
 	_ "github.com/joho/godotenv/autoload"
-	"github.com/snipextt/lets-talk-server/pkg"
-	"github.com/snipextt/lets-talk-server/pkg/db"
+	"github.com/snipextt/lets-talk/pkg"
+	"github.com/snipextt/lets-talk/pkg/db"
 )
 
 func main() {

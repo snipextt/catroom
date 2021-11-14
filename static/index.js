@@ -64,9 +64,10 @@ const renderRoom = (room) => {
   hr.className = "m-0 mt-1";
   roomNode.appendChild(hr);
   const container = document.createElement("div");
-  container.className = "row mw-100 h-100";
-  container.innerHTML = `<div class="col-10 border-end d-flex flex-column" style="border-color: rgb(72, 72, 72) !important">
-    <div id="messages-area" class="container-fluid mb-4 py-4" style="height: 92%"></div>
+  container.className = "row mw-100";
+  container.style.height = "calc(100vh - 50px)";
+  container.innerHTML = `<div class="col-10 border-end d-flex mh-100 flex-column" style="border-color: rgb(72, 72, 72) !important">
+    <div id="messages-area" class="container-fluid py-2" style="height: 92%"></div>
     <div class="container-fluid d-flex flex-column justify-content-center" style="height: 8%"><div id="message" class="input-group"></div></div>
     </div><div id="online" class="col-2 d-flex flex-column align-items-center p-2"><h4>Online</h4><hr class="my-2 w-100" /><div id="online-users"></div></div>`;
   roomNode.appendChild(container);
@@ -112,7 +113,7 @@ const renderRoomsList = () => {
 
 const handleUserAdd = (message) => {
   if (!rooms[message.room]) {
-    setTimeout(() => renderRoom(message.room), 600);
+    setTimeout(() => renderRoom(message.room), 0);
     rooms[message.room] = {
       users: [],
       messages: [],
@@ -128,6 +129,8 @@ const handleHistory = (message) => {
   rooms[message.room].messages.push(
     message.history?.map((msg) => JSON.parse(msg))
   );
+  if (message.room === roomInView)
+    renderMessages(rooms[message.room].messages[0]);
 };
 
 const handleUserRemove = (message) => {

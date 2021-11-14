@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	"github.com/gorilla/websocket"
-	"github.com/snipextt/lets-talk-server/internal"
+	"github.com/snipextt/lets-talk/internal"
 )
 
 var upgrader = websocket.Upgrader{

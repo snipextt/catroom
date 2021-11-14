@@ -8,7 +8,7 @@ import (
 	"time"
 
 	"github.com/gorilla/websocket"
-	"github.com/snipextt/lets-talk-server/pkg/db"
+	"github.com/snipextt/lets-talk/pkg/db"
 )
 
 type Room struct {

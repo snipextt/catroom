@@ -1,4 +1,4 @@
-module github.com/snipextt/lets-talk-server
+module github.com/snipextt/lets-talk
 
 go 1.16
 
