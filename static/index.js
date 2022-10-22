@@ -166,7 +166,7 @@ const processMessages = (message) => {
   }
 };
 
-const socket = new WebSocket("ws://localhost:8080/ws");
+const socket = new WebSocket(`wss://${window.location.host}/ws`);
 socket.addEventListener("message", function (event) {
   if (event.data === "Connected!") {
     ready = true;

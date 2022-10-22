@@ -8,11 +8,15 @@ import (
 	"os/signal"
 
 	_ "github.com/joho/godotenv/autoload"
-	"github.com/snipextt/lets-talk/pkg"
-	"github.com/snipextt/lets-talk/pkg/db"
+	"github.com/snipextt/catroom/pkg"
+	"github.com/snipextt/catroom/pkg/db"
 )
 
 func main() {
+	port := os.Getenv("PORT")
+    if port == "" {
+        port = "8080"
+    }
 	c := make(chan os.Signal, 1)
 	signal.Notify(c, os.Interrupt)
 	go func() {
@@ -28,5 +32,5 @@ func main() {
 	db.ConnectClient()
 	http.HandleFunc("/ws", pkg.HandleWS)
 	http.HandleFunc("/", http.FileServer(http.Dir("./static")).ServeHTTP)
-	log.Fatal(http.ListenAndServe(":8080", nil))
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

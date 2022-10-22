@@ -1,4 +1,4 @@
-module github.com/snipextt/lets-talk
+module github.com/snipextt/catroom
 
 go 1.16
 
